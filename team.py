@@ -1,4 +1,5 @@
 ﻿import random
+import math
 from settings import *
 import player
 
@@ -16,7 +17,7 @@ class Team():
     def generateFirstPlayers(self):
         numPlayersGenerated = playerCount - numDraftPicks if (self.goodness <= badEnoughForDraftToMatter) else playerCount
         for i in range (numPlayersGenerated):
-            self.players.append(player.Player(random.choice(fname) + " " + random.choice(lname), score=(min(100, self.goodness + random.randint(-playerSkillDeviation, playerSkillDeviation)))))
+            self.players.append(player.Player(random.choice(fname) + " " + random.choice(lname), score=(max(0, min(100, self.goodness + math.floor(random.gauss(0, playerSkillDeviation)))))))
 
     def generateFirstDraft(self):
         if self.goodness <= badEnoughForDraftToMatter:
@@ -24,18 +25,7 @@ class Team():
                 self.players.append(player.Player(random.choice(fname) + " " + random.choice(lname), score=(min(100, goodPlayerRating + random.randint(-playerSkillDeviation, playerSkillDeviation)))))
     
     def sortPlayers(self):
-        sortedPlayers = []
-        for i in range(len(self.players)):
-            minScore = 101
-            minPlayer = None
-            for j in range(len(self.players)):
-                currentPlayer = self.players[j]
-                if (currentPlayer.score < minScore) and (not currentPlayer in sortedPlayers):
-                    minScore = currentPlayer.score
-                    minPlayer = currentPlayer 
-            sortedPlayers.append(minPlayer)
-        
-        self.players = sortedPlayers
+        self.players = sorted(self.players, key=lambda player : player.score, reverse=True)
 
     def getAverageScore(self):
         totalScores = 0

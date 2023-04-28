@@ -10,8 +10,8 @@ class Game():
         self.team1.sortPlayers()
         self.team2.sortPlayers()
 
-        # random.gauss adds a normal distribution with a standard deviation of 10
-        evaluation = self.team1.getAverageScore() - self.team2.getAverageScore() + random.gauss(0, 10)
+        # random.gauss adds a normal distribution with a standard deviation of 20
+        evaluation = self.team1.getAverageScore() - self.team2.getAverageScore() + random.gauss(0, 20)
 
         if evaluation > 0:
             self.winningTeam = self.team1
