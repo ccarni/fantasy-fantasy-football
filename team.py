@@ -7,6 +7,8 @@ class Team():
         self.name = name
         self.goodness = goodness
         self.players = []
+        self.wins = 0
+        self.losses = 0
 
         self.generateFirstPlayers()
         self.generateFirstDraft()
@@ -41,6 +43,10 @@ class Team():
             totalScores += player.score
         return totalScores / len(self.players)
 
+    def win(self):
+        self.wins += 1
 
+    def lose(self):
+        self.losses += 1 
 
 

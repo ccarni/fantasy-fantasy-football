@@ -4,43 +4,57 @@ import math
 import player
 import team
 from settings import *
+import game
 
 
 cityNames = open('citynames.txt').read().splitlines()
 teamNames = open('teamnames.txt').read().splitlines()
 teams = []
+openingGames = []
 
 
-# Set up teams
-for i in range(teamCount):
-    teamIndex = random.randint(0, len(teamNames)-1)
-    cityIndex = random.randint(0, len(cityNames)-1)
+def setupTeams():
+    for i in range(teamCount):
+        teamIndex = random.randint(0, len(teamNames)-1)
+        cityIndex = random.randint(0, len(cityNames)-1)
 
-    teams.append(team.Team(f"{cityNames[cityIndex]} {teamNames[teamIndex]}" ,goodness=random.randint(1, 100))) 
+        teams.append(team.Team(f"{cityNames[cityIndex]} {teamNames[teamIndex]}" ,goodness=random.randint(1, 100))) 
 
-    teamNames.pop(teamIndex)
-    cityNames.pop(cityIndex)
+        teamNames.pop(teamIndex)
+        cityNames.pop(cityIndex)
     
-def runGame(team1, team2):
-    team1.sortPlayers()
-    team2.sortPlayers()
 
-    # random.gauss adds a normal distribution with a standard deviation of 10
-    evaluation = team1.getAverageScore() - team2.getAverageScore() + random.gauss(0, 10)
+def playOpeningGames():
+    for i in range(len(teams)):
+        for j in range(i + 1, len(teams)):
+            openingGames.append(game.Game(teams[i], teams[j]))
+            openingGames[-1].playGame()
 
-    return evaluation
+def getPlayoffTeams():
+    # grabs the first four teams
+    _playoffTeams = teams[:4]
+
+    # sorts _playoffTeams
 
 
+    # Checks each other team, seeing if they are good enough to be in the top 4 and if so ranking them relatively
+    for i in range(5, len(teams)):
+        for j in range(4):
+            if (teams[i].wins > _playoffTeams[j].wins) and (not teams[i] in _playoffTeams):
+                _playoffTeams[j] = teams[i]
+    return _playoffTeams
+                
+setupTeams()
+playOpeningGames()
+playoffTeams = getPlayoffTeams()
+# playPlayoffs()
 
+# print opening games
+print("="*100)
+for k in range(len(teams)):
+    print(teams[k].wins, teams[k].losses, teams[k].goodness)
 
-_evaluation = runGame(teams[0], teams[7])
-scoreStart = random.randint(6, 30)
-
-print(teams[0].goodness, teams[7].goodness)
-
-if _evaluation > 0:
-    print("team 1 wins")
-else:
-    print("team 2 wins")
-
+print("="*50)
+for team in playoffTeams:
+    print(team.name, team.goodness, team.wins)
 
