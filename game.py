@@ -5,7 +5,7 @@ class Game():
         self.team1 = team1
         self.team2 = team2
         self.winningTeam = None
-
+  
     def playGame(self):
         self.team1.sortPlayers()
         self.team2.sortPlayers()
